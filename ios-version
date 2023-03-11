@@ -1,0 +1,43 @@
+import UIKit
+
+class ViewController: UIViewController {
+    @IBOutlet weak var chatView: UITextView!
+    @IBOutlet weak var messageTextField: UITextField!
+    
+    // Replace <your_chatgpt_api_url> with your ChatGPT API URL
+    let chatgptApiUrl = "<your_chatgpt_api_url>"
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+    }
+
+    @IBAction func sendMessage(_ sender: Any) {
+        guard let message = messageTextField.text else {
+            return
+        }
+        messageTextField.text = ""
+        chatView.text += "You: \(message)\n"
+        
+        guard let url = URL(string: chatgptApiUrl) else {
+            return
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let jsonData = try? JSONSerialization.data(withJSONObject: ["message": message])
+        request.httpBody = jsonData
+        
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { (data, response, error) in
+            if let data = data, let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: String], let message = json["message"] {
+                DispatchQueue.main.async {
+                    self.chatView.text += "ChatGPT: \(message)\n"
+                }
+            } else if let error = error {
+                print("Error: \(error.localizedDescription)")
+            }
+        }
+        task.resume()
+    }
+}
