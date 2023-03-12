@@ -4,8 +4,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var chatView: UITextView!
     @IBOutlet weak var messageTextField: UITextField!
     
-    // Replace <your_chatgpt_api_url> with your ChatGPT API URL
-    let chatgptApiUrl = "<your_chatgpt_api_url>"
+    // Replace <your_chatgpt_api_key> with your ChatGPT API key
+    let chatgptApiKey = "<your_chatgpt_api_key>"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,20 +19,21 @@ class ViewController: UIViewController {
         messageTextField.text = ""
         chatView.text += "You: \(message)\n"
         
-        guard let url = URL(string: chatgptApiUrl) else {
+        guard let url = URL(string: "https://api.openai.com/v1/engines/davinci-codex/completions") else {
             return
         }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
+        request.addValue("Bearer \(chatgptApiKey)", forHTTPHeaderField: "Authorization")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        let jsonData = try? JSONSerialization.data(withJSONObject: ["message": message])
+        let jsonData = try? JSONSerialization.data(withJSONObject: ["prompt": message, "max_tokens": 50])
         request.httpBody = jsonData
         
         let session = URLSession.shared
         let task = session.dataTask(with: request) { (data, response, error) in
-            if let data = data, let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: String], let message = json["message"] {
+            if let data = data, let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any], let choices = json["choices"] as? [[String: Any]], let text = choices.first?["text"] as? String {
                 DispatchQueue.main.async {
-                    self.chatView.text += "ChatGPT: \(message)\n"
+                    self.chatView.text += "ChatGPT: \(text)\n"
                 }
             } else if let error = error {
                 print("Error: \(error.localizedDescription)")
