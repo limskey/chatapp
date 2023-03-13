@@ -1,0 +1,19 @@
+# Use the official Python image as the base image
+FROM python:3.9-slim-buster
+
+# Set the working directory to /app
+WORKDIR /chatterpy
+
+# Copy the requirements file into the container and install the dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the Flask app into the container
+COPY app.py .
+COPY index.html .
+
+# Expose port 5000 for the Flask app to listen on
+EXPOSE 5000
+
+# Start the Flask app when the container starts
+CMD ["python", "flask", "-m", "app.py"]

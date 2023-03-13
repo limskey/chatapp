@@ -7,7 +7,7 @@ app = Flask(__name__)
 chatgpt_api_url = "https://api.openai.com/v1/chat/completions"
 headers = { 
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer sk-'
+    'Authorization': 'Bearer '
 }
 
 data = {

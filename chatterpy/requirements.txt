@@ -1,0 +1,2 @@
+Flask==2.2.3
+Authorization==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
