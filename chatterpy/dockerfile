@@ -10,7 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the Flask app into the container
 COPY app.py .
-COPY index.html .
+COPY templates/index.html .
 
 # Expose port 5000 for the Flask app to listen on
 EXPOSE 5000

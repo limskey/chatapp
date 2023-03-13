@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify, render_template
+from flask 
+import Flask, request, jsonify, render_template
 import requests
 
 app = Flask(__name__)
@@ -7,7 +8,7 @@ app = Flask(__name__)
 chatgpt_api_url = "https://api.openai.com/v1/chat/completions"
 headers = { 
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer '
+    'Authorization': 'Bearer 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'
 }
 
 data = {
