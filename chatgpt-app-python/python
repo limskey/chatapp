@@ -1,0 +1,20 @@
+from flask import Flask, request, jsonify, render_template
+import requests
+
+app = Flask(__name__)
+
+# Replace <your_chatgpt_api_url> with your ChatGPT API URL
+chatgpt_api_url = "<your_chatgpt_api_url>"
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    message = request.form['message']
+    response = requests.post(chatgpt_api_url, json={'message': message}).json()
+    return jsonify({'message': response['message']})
+
+if __name__ == '__main__':
+    app.run(debug=True)
