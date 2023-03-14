@@ -1,14 +1,16 @@
-from flask 
-import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template
+import os
 import requests
 
 app = Flask(__name__)
+
+API_KEY = os.environ.get('API_KEY')
 
 # Replace <your_chatgpt_api_url> with your ChatGPT API URL
 chatgpt_api_url = "https://api.openai.com/v1/chat/completions"
 headers = { 
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer '
+    'Authorization': f'Bearer {API_KEY}'
 }
 
 data = {
@@ -25,7 +27,7 @@ def chat():
     messages = [{"role": "user", "content": f"{message}"}]
     data['messages'] = messages
     response = requests.post(chatgpt_api_url, json=data, headers=headers).json()
-    # print(response['choices'][0]['message']['content'])
+    #print(response)
     return jsonify({'message': response['choices'][0]['message']['content']})
 
 if __name__ == '__main__':
